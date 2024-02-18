@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 
 // Replace 'YOUR_BOT_TOKEN' with your actual bot token obtained from BotFather
-const bot = new TelegramBot('YOUR_BOT_TOKEN', { polling: true });
+const bot = new TelegramBot('6875379832:AAEgB65lshZmTqX4jXBiAzW2fO-3MCQQZww', { polling: true });
 
 bot.onText(/https?:\/\/\S+\.mp4/, async (msg, match) => {
     const chatId = msg.chat.id;
