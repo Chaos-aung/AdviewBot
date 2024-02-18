@@ -19,9 +19,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-             npm install node-telegram-bot-api
-             npm install axios
-             npm install fs
+             npm install node-telegram-bot-api axios cheerio
 
 
 
