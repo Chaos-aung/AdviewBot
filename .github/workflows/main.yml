@@ -29,4 +29,4 @@ jobs:
       - name: Run Bot Script
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}  # Set your bot token as a secret in your repository
-        run: node BreadcrumbsDownloadLinkBot.js  # Replace 'your_bot_script.js' with the filename of your bot script
+        run: node DownloadLinkBot.js  # Replace 'your_bot_script.js' with the filename of your bot script
