@@ -1,0 +1,32 @@
+name: Node.js Telegram Bot
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: |
+             npm install node-telegram-bot-api
+             npm install axios
+             npm install fs
+
+
+
+
+      - name: Run Bot Script
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}  # Set your bot token as a secret in your repository
+        run: node BreadcrumbsDownloadLinkBot.js  # Replace 'your_bot_script.js' with the filename of your bot script
