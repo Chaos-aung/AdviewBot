@@ -45,5 +45,5 @@ async function generateDirectDownloadLink(message) {
     return directDownloadLink;
 }
 
-// Start the bot
+
 console.log('Bot is running...');
