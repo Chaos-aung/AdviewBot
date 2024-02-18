@@ -1,6 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const fs = require('fs');
 
 // Replace 'YOUR_BOT_TOKEN' with your actual bot token obtained from BotFather
 const bot = new TelegramBot('6875379832:AAEgB65lshZmTqX4jXBiAzW2fO-3MCQQZww', { polling: true });
@@ -8,12 +9,10 @@ const bot = new TelegramBot('6875379832:AAEgB65lshZmTqX4jXBiAzW2fO-3MCQQZww', { 
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
 
-    // Check if the message contains a URL
-    if (msg.entities && msg.entities[0].type === 'url') {
-        const url = msg.text;
-
+    // Check if the message contains a media (photo or video)
+    if (msg.photo || msg.video) {
         try {
-            const directDownloadLink = await generateDirectDownloadLink(url);
+            const directDownloadLink = await generateDirectDownloadLink(msg);
             bot.sendMessage(chatId, `Direct Download Link: ${directDownloadLink}`);
         } catch (error) {
             console.error('Error generating direct download link:', error);
@@ -22,26 +21,26 @@ bot.on('message', async (msg) => {
     }
 });
 
-async function generateDirectDownloadLink(url) {
-    // Fetch the HTML content of the URL
-    const response = await axios.get(url);
-    const $ = cheerio.load(response.data);
+async function generateDirectDownloadLink(message) {
+    let mediaFileId;
+    let mediaType;
 
-    // Extract the direct download link
-    let directDownloadLink;
-
-    // Replace 'YOUR_SELECTOR' with the appropriate CSS selector for the download link element
-    $('a').each((index, element) => {
-        const href = $(element).attr('href');
-        if (href && href.toLowerCase().endsWith('.mp4')) {
-            directDownloadLink = href;
-            return false; // Exit the loop once the first MP4 link is found
-        }
-    });
-
-    if (!directDownloadLink) {
-        throw new Error('Direct download link not found');
+    // Determine the media type and get the file ID
+    if (message.photo) {
+        mediaType = 'photo';
+        mediaFileId = message.photo[message.photo.length - 1].file_id;
+    } else if (message.video) {
+        mediaType = 'video';
+        mediaFileId = message.video.file_id;
+    } else {
+        throw new Error('Unsupported media type');
     }
+
+    // Get the file details using Telegram Bot API
+    const fileInfo = await bot.getFile(mediaFileId);
+
+    // Construct the direct download link using the file path from Telegram
+    const directDownloadLink = `https://api.telegram.org/file/bot${bot.token}/${fileInfo.file_path}`;
 
     return directDownloadLink;
 }
