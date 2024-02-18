@@ -28,8 +28,16 @@ async function generateDirectDownloadLink(url) {
     const $ = cheerio.load(response.data);
 
     // Extract the direct download link
-    // This is just a placeholder, you need to customize this logic based on the structure of the page
-    const directDownloadLink = $('a[href^="https://example.com/download"]').attr('href');
+    let directDownloadLink;
+
+    // Replace 'YOUR_SELECTOR' with the appropriate CSS selector for the download link element
+    $('a').each((index, element) => {
+        const href = $(element).attr('href');
+        if (href && href.toLowerCase().endsWith('.mp4')) {
+            directDownloadLink = href;
+            return false; // Exit the loop once the first MP4 link is found
+        }
+    });
 
     if (!directDownloadLink) {
         throw new Error('Direct download link not found');
